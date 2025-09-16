@@ -1,0 +1,189 @@
+<main class="main" role="main" aria-label="Audio Generation Application">
+  <div class="content">
+    <h1 id="main-title">Funkathon Audio Generator</h1>
+    
+    <div class="form-container" role="form" aria-label="Audio Generation Form">
+      <fieldset class="input-group">
+        <legend class="input-label">Target Audience</legend>
+        <div class="radio-group" role="radiogroup" aria-labelledby="target-audience-legend">
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="targetAudience" 
+              value="internal"
+              [(ngModel)]="targetAudience"
+              [disabled]="isLoading"
+              aria-describedby="target-audience-description">
+            <span class="radio-label">Internal</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="targetAudience" 
+              value="external"
+              [(ngModel)]="targetAudience"
+              [disabled]="isLoading"
+              aria-describedby="target-audience-description">
+            <span class="radio-label">External</span>
+          </label>
+        </div>
+        <div id="target-audience-description" class="sr-only">Select whether the audio is for internal or external use</div>
+      </fieldset>
+      
+      <fieldset class="input-group">
+        <legend class="input-label">Persona</legend>
+        <div class="radio-group" role="radiogroup" aria-labelledby="persona-legend">
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="granulationLevel" 
+              value="highLevel"
+              [(ngModel)]="granulationLevel"
+              [disabled]="isLoading"
+              aria-describedby="persona-description">
+            <span class="radio-label">High Level</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="granulationLevel" 
+              value="deepDive"
+              [(ngModel)]="granulationLevel"
+              [disabled]="isLoading"
+              aria-describedby="persona-description">
+            <span class="radio-label">Deep Dive</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="granulationLevel" 
+              value="gtm"
+              [(ngModel)]="granulationLevel"
+              [disabled]="isLoading"
+              aria-describedby="persona-description">
+            <span class="radio-label">GTM</span>
+          </label>
+        </div>
+        <div id="persona-description" class="sr-only">Select the level of detail for the audio content</div>
+      </fieldset>
+      
+      <fieldset class="input-group">
+        <legend class="input-label">Customer Segment</legend>
+        <div class="radio-group" role="radiogroup" aria-labelledby="customer-segment-legend">
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="customerSegment" 
+              value="retailEcommerce"
+              [(ngModel)]="customerSegment"
+              [disabled]="isLoading"
+              aria-describedby="customer-segment-description">
+            <span class="radio-label">Retail & E-commerce</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="customerSegment" 
+              value="financialServices"
+              [(ngModel)]="customerSegment"
+              [disabled]="isLoading"
+              aria-describedby="customer-segment-description">
+            <span class="radio-label">Financial Services & Insurance</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="customerSegment" 
+              value="travelHospitality"
+              [(ngModel)]="customerSegment"
+              [disabled]="isLoading"
+              aria-describedby="customer-segment-description">
+            <span class="radio-label">Travel & Hospitality</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="customerSegment" 
+              value="telecom"
+              [(ngModel)]="customerSegment"
+              [disabled]="isLoading"
+              aria-describedby="customer-segment-description">
+            <span class="radio-label">Telecom</span>
+          </label>
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="customerSegment" 
+              value="technologySaas"
+              [(ngModel)]="customerSegment"
+              [disabled]="isLoading"
+              aria-describedby="customer-segment-description">
+            <span class="radio-label">Technology & SaaS</span>
+          </label>
+        </div>
+        <div id="customer-segment-description" class="sr-only">Select the industry sector for the audio content</div>
+      </fieldset>
+      
+      <div class="input-group">
+        <label for="episode-length-slider" class="input-label">Episode Length (minutes)</label>
+        <div class="slider-container">
+          <input 
+            id="episode-length-slider"
+            type="range" 
+            class="slider"
+            min="1" 
+            max="10" 
+            step="1"
+            [(ngModel)]="episodeLength"
+            [disabled]="isLoading"
+            aria-describedby="episode-length-description episode-length-value"
+            aria-label="Episode length in minutes">
+          <div id="episode-length-value" class="slider-value" aria-live="polite">{{ episodeLength }} minutes</div>
+        </div>
+        <div id="episode-length-description" class="sr-only">Adjust the slider to select episode length between 1 and 10 minutes</div>
+      </div>
+      
+      <div class="input-group">
+        <label for="text-input" class="input-label">Text to Convert</label>
+        <textarea 
+          id="text-input"
+          class="text-area" 
+          placeholder="Enter your text here to convert to speech..."
+          [(ngModel)]="inputText"
+          [disabled]="isLoading"
+          aria-describedby="text-input-description"
+          aria-label="Text content to convert to audio"
+          rows="6">
+        </textarea>
+        <div id="text-input-description" class="sr-only">Enter the text content that you want to convert to audio speech</div>
+      </div>
+      
+      <div class="button-container">
+        <button 
+          type="button"
+          class="submit-button"
+          (click)="generateAudio()"
+          [disabled]="!inputText.trim() || isLoading"
+          aria-describedby="submit-description"
+          [attr.aria-label]="isLoading ? 'Generating audio, please wait' : 'Generate audio from the entered text'">
+          {{ isLoading ? 'Generating...' : 'Generate Audio' }}
+        </button>
+        
+        <button 
+          *ngIf="showDownloadButton"
+          type="button"
+          class="download-button"
+          (click)="downloadAudio()"
+          aria-describedby="download-description"
+          aria-label="Download the generated audio file">
+          Download Audio
+        </button>
+      </div>
+      
+      <div id="submit-description" class="sr-only">Click to generate audio from the text using the selected parameters</div>
+      <div id="download-description" class="sr-only">Click to download the generated audio file to your device</div>
+    </div>
+  </div>
+</main>
+
+<router-outlet />
