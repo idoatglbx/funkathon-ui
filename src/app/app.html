@@ -1,6 +1,16 @@
 <main class="main" role="main" aria-label="Audio Generation Application">
   <div class="content">
-    <h1 id="main-title">Funkathon Audio Generator</h1>
+    <div class="header">
+      <h1 id="main-title">Funkathon Audio Generator</h1>
+      <button 
+        type="button"
+        class="dark-mode-toggle"
+        (click)="toggleDarkMode()"
+        [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
+        [attr.title]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+        <span class="toggle-icon">{{ isDarkMode ? '☀️' : '🌙' }}</span>
+      </button>
+    </div>
     
     <div class="form-container" role="form" aria-label="Audio Generation Form">
       <fieldset class="input-group">

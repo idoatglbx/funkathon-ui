@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal, ElementRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { AudioGenerationService, AudioGenerationRequest } from './services/audio
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit {
   protected readonly title = signal('funkathon-ui');
   
   inputText = '';
@@ -21,8 +21,40 @@ export class App {
   isLoading = false;
   generatedAudioBlob: Blob | null = null;
   showDownloadButton = false;
+  isDarkMode = false;
 
-  constructor(private audioGenerationService: AudioGenerationService) {}
+  constructor(private audioGenerationService: AudioGenerationService, private elementRef: ElementRef) {
+    this.initializeDarkMode();
+  }
+
+  ngOnInit() {
+    this.applyDarkMode();
+  }
+
+  initializeDarkMode() {
+    // Check localStorage for saved preference, default to system preference
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode !== null) {
+      this.isDarkMode = savedMode === 'true';
+    } else {
+      // Check system preference
+      this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    this.applyDarkMode();
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
+  }
+
+  applyDarkMode() {
+    if (this.isDarkMode) {
+      this.elementRef.nativeElement.classList.add('dark-mode');
+    } else {
+      this.elementRef.nativeElement.classList.remove('dark-mode');
+    }
+  }
 
   generateAudio() {
     if (!this.inputText.trim()) {
