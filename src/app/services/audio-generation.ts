@@ -5,10 +5,10 @@ import { environment } from '../../environments/environment';
 
 export interface AudioGenerationRequest {
   text: string;
-  audienceType: string;
+  target: string;
   persona: string;
   segment: string;
-  length: number;
+  lengthMinutes: number;
 }
 
 export interface AudioGenerationResponse {

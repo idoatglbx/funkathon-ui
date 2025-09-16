@@ -67,10 +67,10 @@ export class App implements OnInit {
     
     const request: AudioGenerationRequest = {
       text: this.inputText,
-      audienceType: this.targetAudience,
+      target: this.targetAudience,
       persona: this.granulationLevel,
       segment: this.customerSegment,
-      length: this.episodeLength
+      lengthMinutes: this.episodeLength
     };
     
     this.audioGenerationService.generateAudio(request).subscribe({
