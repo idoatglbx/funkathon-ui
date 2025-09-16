@@ -37,6 +37,13 @@ export class AudioGenerationService {
       'Content-Type': 'application/json'
     });
 
+    // Log the payload before sending the request
+    console.log('🎵 Audio Generation Request Payload:', {
+      endpoint: this.apiEndpoint,
+      payload: request,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
     return this.http.post(this.apiEndpoint, request, { 
       headers,
       responseType: 'blob'
