@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ElementRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { AudioGenerationService, AudioGenerationRequest } from './services/audio
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App implements OnInit {
+export class App implements OnInit, OnDestroy {
   protected readonly title = signal('funkathon-ui');
   
   inputText = '';
@@ -21,6 +21,8 @@ export class App implements OnInit {
   isLoading = false;
   generatedAudioBlob: Blob | null = null;
   showDownloadButton = false;
+  showAudioPlayer = false;
+  audioUrl: string | null = null;
   isDarkMode = false;
 
   constructor(private audioGenerationService: AudioGenerationService, private elementRef: ElementRef) {
@@ -78,7 +80,16 @@ export class App implements OnInit {
         this.isLoading = false;
         this.generatedAudioBlob = blob;
         this.showDownloadButton = true;
+        
+        // Create audio URL for playback
+        this.audioUrl = this.audioGenerationService.createAudioUrl(blob);
+        this.showAudioPlayer = true;
         console.log('Audio generated successfully');
+        
+        // Scroll to the generated content section after a short delay to ensure DOM is updated
+        setTimeout(() => {
+          this.scrollToGeneratedContent();
+        }, 100);
       },
       error: (error) => {
         this.isLoading = false;
@@ -92,6 +103,24 @@ export class App implements OnInit {
     if (this.generatedAudioBlob) {
       const filename = `audio-${this.targetAudience}-${this.granulationLevel}-${Date.now()}.mp3`;
       this.audioGenerationService.downloadAudio(this.generatedAudioBlob, filename);
+    }
+  }
+
+  scrollToGeneratedContent() {
+    const element = document.getElementById('generated-content');
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    // Clean up audio URL to prevent memory leaks
+    if (this.audioUrl) {
+      this.audioGenerationService.revokeAudioUrl(this.audioUrl);
     }
   }
 }

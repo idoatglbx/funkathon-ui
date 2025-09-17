@@ -176,23 +176,51 @@
           [disabled]="!inputText.trim() || isLoading"
           aria-describedby="submit-description"
           [attr.aria-label]="isLoading ? 'Generating audio, please wait' : 'Generate audio from the entered text'">
-          {{ isLoading ? 'Generating...' : 'Generate Audio' }}
-        </button>
-        
-        <button 
-          *ngIf="showDownloadButton"
-          type="button"
-          class="download-button"
-          (click)="downloadAudio()"
-          aria-describedby="download-description"
-          aria-label="Download the generated audio file">
-          Download Audio
+          <div *ngIf="isLoading" class="loader-container">
+            <div class="loader"></div>
+            <span class="loading-text">Generating Audio...</span>
+          </div>
+          <span *ngIf="!isLoading">Generate Audio</span>
         </button>
       </div>
-      
-      <div id="submit-description" class="sr-only">Click to generate audio from the text using the selected parameters</div>
-      <div id="download-description" class="sr-only">Click to download the generated audio file to your device</div>
     </div>
+    
+    <!-- Generated Content Section -->
+    <div *ngIf="showAudioPlayer" id="generated-content" class="generated-content-section">
+      <div class="generated-content-header">
+        <h2 class="generated-content-title">🎵 Generated Audio</h2>
+        <p class="generated-content-subtitle">Your audio has been successfully generated</p>
+      </div>
+      
+      <div class="generated-content-body">
+        <div class="audio-player-container">
+          <audio 
+            #audioPlayer
+            class="audio-player"
+            controls
+            [src]="audioUrl"
+            preload="metadata"
+            aria-label="Generated audio playback">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        
+        <div class="generated-actions">
+          <button 
+            *ngIf="showDownloadButton"
+            type="button"
+            class="download-button"
+            (click)="downloadAudio()"
+            aria-describedby="download-description"
+            aria-label="Download the generated audio file">
+            📥 Download Audio
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="submit-description" class="sr-only">Click to generate audio from the text using the selected parameters</div>
+    <div id="download-description" class="sr-only">Click to download the generated audio file to your device</div>
   </div>
 </main>
 
